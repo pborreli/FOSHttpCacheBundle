@@ -1,7 +1,7 @@
 FOSHttpCacheBundle
 ==================
 
-This is a work in progress to unite the LiipCacheControlBundle and
+This is a work in progress to unite the FOSHttpCacheBundle and
 DriebitHttpCacheBundle into one good bundle. We
 [hope to publish this as a FOS bundle](https://github.com/FriendsOfSymfony/friendsofsymfony.github.com/issues/42)
 
