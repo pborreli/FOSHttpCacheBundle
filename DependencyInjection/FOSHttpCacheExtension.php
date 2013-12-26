@@ -1,33 +1,34 @@
 <?php
 
-namespace Liip\CacheControlBundle\DependencyInjection;
+namespace FOS\HttpCacheBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Processor,
-    Symfony\Component\Config\FileLocator,
-    Symfony\Component\HttpKernel\DependencyInjection\Extension,
-    Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\Reference,
-    Symfony\Component\DependencyInjection\DefinitionDecorator,
-    Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Loader;
 
-class LiipCacheControlExtension extends Extension
+/**
+ * This is the class that loads and manages your bundle configuration
+ *
+ * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ */
+class FOSHttpCacheExtension extends Extension
 {
     /**
-     * Loads the services based on your application configuration.
-     *
-     * @param array $configs
-     * @param ContainerBuilder $container
+     * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $processor = new Processor();
         $configuration = new Configuration();
-        $config = $processor->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
-        $loader =  new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
 
         $container->setParameter($this->getAlias().'.debug', $config['debug']);
+        $container->setParameter($this->getAlias().'.invalidators', $config['invalidators']);
 
         if (!empty($config['rules'])) {
             $loader->load('rule_response_listener.xml');
@@ -61,21 +62,14 @@ class LiipCacheControlExtension extends Extension
             }
         }
 
-        if (!empty($config['varnish'])) {
-
+        if (isset($config['varnish'])) {
             if (!extension_loaded('curl')) {
-                throw new RuntimeException('Varnish Helper requires cUrl php extension. Please install it to continue');
-
+                throw new RuntimeException('Varnish requires cUrl php extension. Please install it to continue');
             }
 
-            // domain is depreciated and will be removed in future
-            $host = is_null($config['varnish']['host']) && $config['varnish']['domain'] ? $config['varnish']['domain'] : $config['varnish']['host'];
-
-            $loader->load('varnish_helper.xml');
+            $loader->load('varnish.xml');
             $container->setParameter($this->getAlias().'.varnish.ips', $config['varnish']['ips']);
-            $container->setParameter($this->getAlias().'.varnish.host', $host);
-            $container->setParameter($this->getAlias().'.varnish.port', $config['varnish']['port']);
-            $container->setParameter($this->getAlias().'.varnish.purge_instruction', $config['varnish']['purge_instruction']);
+            $container->setParameter($this->getAlias().'.varnish.host', $config['varnish']['host']);
         }
 
         if ($config['authorization_listener']) {
