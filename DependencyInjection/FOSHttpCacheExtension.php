@@ -10,9 +10,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ * {@inheritdoc}
  */
 class FOSHttpCacheExtension extends Extension
 {
@@ -63,10 +61,6 @@ class FOSHttpCacheExtension extends Extension
         }
 
         if (isset($config['varnish'])) {
-            if (!extension_loaded('curl')) {
-                throw new RuntimeException('Varnish requires cUrl php extension. Please install it to continue');
-            }
-
             $loader->load('varnish.xml');
             $container->setParameter($this->getAlias().'.varnish.ips', $config['varnish']['ips']);
             $container->setParameter($this->getAlias().'.varnish.host', $config['varnish']['host']);
