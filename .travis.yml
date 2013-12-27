@@ -12,5 +12,16 @@ env:
 
 before_script:
   - composer require symfony/framework-bundle:${SYMFONY_VERSION}
+  - sudo apt-get update -qq
+
+  # Install Varnish
+  - sudo apt-get install -qq varnish
+  - sudo cp -f Tests/Functional/Fixtures/varnish/fos.vcl /etc/varnish/default.vcl
+  - sudo service varnish restart
+
+  # Install Apache
+  - sudo apt-get install apache2 libapache2-mod-fastcgi
+  - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/default
+  - sudo service apache2 restart
 
 script: phpunit --coverage-text
