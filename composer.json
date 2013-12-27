@@ -17,7 +17,7 @@
         },
         {
             "name": "Community contributions",
-            "homepage": "https://github.com/liip/LiipThemeBundle/contributors"
+            "homepage": "https://github.com/friendsofsymfony/FOSHttpCacheBundle/contributors"
         }
     ],
     "require": {
