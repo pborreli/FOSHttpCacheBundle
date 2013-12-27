@@ -1,7 +1,7 @@
 {
     "name": "friendsofsymfony/http-cache-bundle",
     "type": "symfony-bundle",
-    "description": "Set path base HTTP cache headers and send invalidation requests to your HTTP cache",
+    "description": "Set path based HTTP cache headers and send invalidation requests to your HTTP cache",
     "keywords": [ "http", "caching", "purge", "invalidation", "varnish", "esi" ],
     "homepage": "https://github.com/ddeboer/FOSHttpCacheBundle",
     "license": "MIT",
@@ -29,7 +29,9 @@
     "require-dev": {
         "guzzle/plugin-mock": "*",
         "mockery/mockery": "*",
-        "monolog/monolog": "*"
+        "monolog/monolog": "*",
+        "sensio/framework-extra-bundle": "~2.1",
+        "symfony/expression-language": "~2.4"
     },
     "autoload": {
         "psr-0": { "FOS\\HttpCacheBundle": "" }
